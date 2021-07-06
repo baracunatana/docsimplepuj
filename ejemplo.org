@@ -1,0 +1,26 @@
+#+title: Título principal
+#+author: Juan E. Gómez-Morantes y Autor Adicional
+
+:confLatex:
+# No incluir tabla de contenidos
+#+options: toc:nil
+# Configuración de babel para títulos y etiquetas en español
+#+LANGUAGE: es
+#+LATEX_HEADER: \usepackage[spanish]{babel}
+# No resaltar enlaces en documento final
+#+latex_class_options: [hidelinks]
+# Agrandar espacio de texto
+# Configuración de biblatex
+#+latex_header: \usepackage{lipsum}  
+#+latex_header: \usepackage{docsimplepuj}
+#+latex_header: \title{Título principal}
+#+latex_header: \subtitle{Título secundario}
+#+latex_header: \subsubtitle{Título terciario}
+:END:
+
+* Primera sección
+\lipsum[1-3]
+** Sub-sección 
+\lipsum[4-5]
+*** Sub-sub-sección 
+\lipsum[6-8]

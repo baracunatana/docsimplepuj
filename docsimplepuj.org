@@ -1,0 +1,121 @@
+#+author: Juan E. Gómez-Morantes, PhD
+#+title: Hoja de estilo no oficial para documentos simples de la Pontificia Universidad Javeriana usando LaTex
+#+property: header-args :tangle ./enunciadoPUJ.sty
+
+* Introducción
+La presente hoja de estilo de LaTex tiene como objetivo tener una formato estandarizado para la generación de documentos simples (e.g. enunciados, programas de cursos, entregas por parte de estudiantes, reportes de avance, etc.) para la Pontificia Universidad Javeriana en Bogotá, Colombia.
+
+Este archivo usa el paquete =org= de Emacs para tener un código fuente en formato de programación literaria para documentar el código de la hoja de estilo. 
+
+* Paquetes a utilizar
+#+begin_src :tangle ./enunciadoPUJ.sty
+\usepackage[margin=3cm]{geometry} %to define the margins
+\usepackage[export]{adjustbox} %the export option makes it load graphicx
+\usepackage{pgf} % Allows the manipulation of numeric values
+\usepackage{etoolbox} % Provides functionality for the evaluation of conditional statements
+\usepackage[scaled]{helvet} % Provides Helvita as sans serif font
+\usepackage{ebgaramond} % Provides EB Garamond as serif font
+\usepackage[T1]{fontenc} % Improves font encoding
+\usepackage{xcolor} % Allows the definition of colours
+\usepackage{sectsty} % Allows the formating of headings
+\usepackage{colortbl} % Allows to define colour of table lines
+\usepackage{titlesec} % Allows for the formating of headings
+#+end_src
+
+* Definición de colores a usar en el documento
+Se define el azul institucional (tomado de [[https://www.javeriana.edu.co/recursosdb/813229/983106/Manual+de+Identidad+Visual+2018.pdf/bb8d2ae7-2b76-b755-f179-c0ea8337b567?t=1606514066712][manual de identidad visual]]) para títulos y encabezados de secciones. 
+
+#+begin_src :tangle ./enunciadoPUJ.sty
+\definecolor{azulPUJ}{RGB}{44, 86, 151}
+#+end_src
+
+* Formateo de texto, títulos, y encabezados.
+Se usa GaramondEB para título y texto principal, y Helvetica para encabezado de secciones. 
+
+En adición, se usan los siguientes tamaños para los encabezados de secciones:
+| Sección       | \Large      |
+| Subsección    | \large      |
+| Subsubsección | \normalsize |
+
+Finalmente, se define un espacio de 0.75em después de cada párrafo.
+
+#+begin_src :tangle ./enunciadoPUJ.sty
+\sectionfont{\Large\sffamily\color{azulPUJ}}
+\subsectionfont{\large\sffamily\color{azulPUJ}}
+\subsubsectionfont{\normalsize\sffamily\color{azulPUJ}}
+\setlength{\parskip}{0.75em}
+#+end_src
+
+Se usa titlesec para reducir el espacio después de encabezados, pero conservando un espacio antes.
+#+begin_src :tangle ./enunciadoPUJ.sty
+\titlespacing\section{0pt}{1.2em}{0pt}
+\titlespacing\subsection{0pt}{.8em}{0pt}
+\titlespacing\subsubsection{0pt}{.5em}{0pt}
+#+end_src
+
+* Creación del título del documento
+El documento cuenta con 3 niveles de título: título, subtítulo, y subsubtítulo. Un ejemplo de uso sería:
+| Title       | Asignatura X               | Obligatorio |
+| Subtitle    | Laboratorio Y              | Opcional    |
+| SubSubtitle | Temática del laboratorio Y | Opcional    |
+
+Para lograr un título que se adapte al uso opcional del subtítulo y el título, manteniendo un tamaño proporcional del logo de la universidad a la izquierda del título, se empieza con una altura de 4\baselineskip para la imagen y luego se aumenta si se definen sub o subsub título.
+
+#+begin_src :tangle ./enunciadoPUJ.sty
+\newtoggle{withSubtitle}
+\togglefalse{withSubtitle}
+\newtoggle{withSubsubtitle}
+\togglefalse{withSubsubtitle}
+
+\pgfmathsetmacro{\altura}{5}
+
+\newcommand{\aumentarAltura}[1]{
+  \pgfmathsetmacro{\altura}{\altura+#1}
+}
+
+\def\@subtitle{}
+\newcommand{\subtitle}[1]{
+  \def\@subtitle{#1}
+  \aumentarAltura{1}
+  \toggletrue{withSubtitle}
+}
+
+\def\@subsubtitle{}
+\newcommand{\subsubtitle}[1]{
+  \def\@subsubtitle{#1}
+  \aumentarAltura{1}
+  \toggletrue{withSubsubtitle}
+}
+
+\renewcommand{\maketitle}{\bgroup\setlength{\parindent}{0pt}
+ \includegraphics[height=\altura\baselineskip,valign=m]{./img/logoBasico.jpg}
+  {
+    \setlength\arrayrulewidth{2pt}
+    \arrayrulecolor{azulPUJ}
+    \begin{tabular}{p{1pt}|p{1pt}l}
+      && \parbox{.7\linewidth}{\Huge\color{azulPUJ}\textbf{\@title}}\\      \iftoggle{withSubtitle}{&&\parbox{.7\linewidth}{\LARGE\color{azulPUJ}\textbf{\@subtitle}\vspace{2pt}}\\}{} \iftoggle{withSubsubtitle}{&&\parbox{.7\linewidth}{\Large\color{azulPUJ}\@subsubtitle}\\}{}
+      && \\
+      && \\
+      && \parbox{.7\linewidth}{\color{azulPUJ}\large\@prefixAuthor\@author\vspace{2pt}} \\
+      &&\color{azulPUJ}\@prefixDate\@date \\
+    \end{tabular}
+  }
+
+ \vspace{3\baselineskip}
+}
+#+end_src
+
+** Configuración del prefijo del autor y la fecha del documento
+Se definen los siguiente comando para configurar los prefijos del autor y la fecha del documento.
+
+#+begin_src :tangle ./enunciadoPUJ.sty
+\def\@prefixAuthor{Preparado por: }
+\newcommand{\prefixAuthor}[1]{
+  \def\@prefixAuthor{#1}
+}
+
+\def\@prefixDate{Última actualización: }
+\newcommand{\prefixDate}[1]{
+  \def\@prefixDate{#1}
+}
+#+end_src
