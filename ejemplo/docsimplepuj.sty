@@ -1,0 +1,74 @@
+\usepackage[margin=3cm]{geometry} %to define the margins
+\usepackage[export]{adjustbox} %the export option makes it load graphicx
+\usepackage{pgf} % Allows the manipulation of numeric values
+\usepackage{etoolbox} % Provides functionality for the evaluation of conditional statements
+\usepackage[scaled]{helvet} % Provides Helvita as sans serif font
+\usepackage{ebgaramond} % Provides EB Garamond as serif font
+\usepackage[T1]{fontenc} % Improves font encoding
+\usepackage{xcolor} % Allows the definition of colours
+\usepackage{sectsty} % Allows the formating of headings
+\usepackage{colortbl} % Allows to define colour of table lines
+\usepackage{titlesec} % Allows for the formating of headings
+
+\definecolor{azulPUJ}{RGB}{44, 86, 151}
+
+\sectionfont{\Large\sffamily\color{azulPUJ}}
+\subsectionfont{\large\sffamily\color{azulPUJ}}
+\subsubsectionfont{\normalsize\sffamily\color{azulPUJ}}
+\setlength{\parskip}{0.75em}
+
+\titlespacing\section{0pt}{1.2em}{0pt}
+\titlespacing\subsection{0pt}{.8em}{0pt}
+\titlespacing\subsubsection{0pt}{.5em}{0pt}
+
+\newtoggle{withSubtitle}
+\togglefalse{withSubtitle}
+\newtoggle{withSubsubtitle}
+\togglefalse{withSubsubtitle}
+
+\pgfmathsetmacro{\altura}{5}
+
+\newcommand{\aumentarAltura}[1]{
+  \pgfmathsetmacro{\altura}{\altura+#1}
+}
+
+\def\@subtitle{}
+\newcommand{\subtitle}[1]{
+  \def\@subtitle{#1}
+  \aumentarAltura{1}
+  \toggletrue{withSubtitle}
+}
+
+\def\@subsubtitle{}
+\newcommand{\subsubtitle}[1]{
+  \def\@subsubtitle{#1}
+  \aumentarAltura{1}
+  \toggletrue{withSubsubtitle}
+}
+
+\renewcommand{\maketitle}{\bgroup\setlength{\parindent}{0pt}
+ \includegraphics[height=\altura\baselineskip,valign=m]{./img/logoBasico.jpg}
+  {
+    \setlength\arrayrulewidth{2pt}
+    \arrayrulecolor{azulPUJ}
+    \begin{tabular}{p{1pt}|p{1pt}l}
+      && \parbox{.7\linewidth}{\Huge\color{azulPUJ}\textbf{\@title}}\\      \iftoggle{withSubtitle}{&&\parbox{.7\linewidth}{\LARGE\color{azulPUJ}\textbf{\@subtitle}\vspace{2pt}}\\}{} \iftoggle{withSubsubtitle}{&&\parbox{.7\linewidth}{\Large\color{azulPUJ}\@subsubtitle}\\}{}
+      && \\
+      && \\
+      && \parbox{.7\linewidth}{\color{azulPUJ}\large\@prefixAuthor\@author\vspace{2pt}} \\
+      &&\color{azulPUJ}\@prefixDate\@date \\
+    \end{tabular}
+  }
+
+ \vspace{3\baselineskip}
+}
+
+\def\@prefixAuthor{Preparado por: }
+\newcommand{\prefixAuthor}[1]{
+  \def\@prefixAuthor{#1}
+}
+
+\def\@prefixDate{Última actualización: }
+\newcommand{\prefixDate}[1]{
+  \def\@prefixDate{#1}
+}
